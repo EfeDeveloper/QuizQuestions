@@ -1,8 +1,8 @@
-import { createText, createBox} from "@shopify/restyle";
+import { createText, createBox } from "@shopify/restyle";
 import { moderateScale } from "react-native-size-matters";
 
 const theme = {
-  color: {
+  colors: {
     black: "#2C3A47",
     text: "#2d3436",
     grey: "#636e72",
@@ -26,7 +26,7 @@ const theme = {
     xl: 75,
   },
   textVariants: {
-    tittle: {
+    title: {
       fontSize: moderateScale(15),
       fontFamily: "Gotham-Black",
       color: "white",
@@ -38,12 +38,12 @@ const theme = {
       text: "text",
     },
     button: {
-      fontFamily: 15,
+      fontsize: 15,
       fontFamily: "Gotham-Bold",
       color: "text",
     },
-    breakpoints: {},
   },
+  breakpoints: {},
 };
 
 export type Theme = typeof theme;
