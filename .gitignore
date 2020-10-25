@@ -8,6 +8,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+native-base-theme
 
 # macOS
 .DS_Store

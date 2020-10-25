@@ -1,55 +1,144 @@
-import React, { Fragment, useRef, useState, useEffect } from "react";
-import { Dimensions, StyleSheet } from "react-native";
+import { CompositeNavigationProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { Alert, Dimensions, StyleSheet } from "react-native";
 import Animated, {
   multiply,
   SpringUtils,
-  Value,
+  Value
 } from "react-native-reanimated";
+import {
+  useScrollHandler,
+  useValue,
+  withSpringTransition
+} from "react-native-redash";
 import { verticalScale } from "react-native-size-matters";
-import theme, { Box, Text } from "../themes";
-import QuestionSlide from "./QuestionSlide";
-import QuizContainer from "./QuizContainer";
-//import { useScrollHandler, useValue, withSpringTransition,} from "react-native-redash";
-const { View, ScrollView } = Animated;
-
-// Utilidades
-const { height, width } = Dimensions.get("window");
-import { questions } from "./data";
-import Answers from "./Answers";
+import { AppStackRoutes } from "../../../App";
 import { Button } from "../../Utils";
 import {
-  grabQuizQuestions,
-  QuestionsDifficulty,
-  QuizPropsState,
-  _,
+  grabQuizQuestions, QuestionsDifficulty,
+
+
+  QuizPropsState, _
 } from "../Helper";
-import Alert from "./Alert";
+import { OnBoardingRoutes } from "../Navigation";
+import QuizContainer from "../Question/QuizContainer";
+import theme, { Box, Text } from "../themes";
+import FinishedAlert from "./Alert";
+import Answers from "./Ansers";
+import QuestionSlide from "./QuestionSlide";
+const { View, ScrollView } = Animated;
 
-export type currAnswerObjectProps = {};
+//Utilidades
+const { height, width } = Dimensions.get("window");
 
-interface QuesitonProps {}
 
-const Question = ({ navigation }: QuesitonProps) => {
+export type currAnswerObjectProps = {
+  question: string;
+  answer: string;
+  answerIsCorrect: boolean;
+  correctAnswer: string;
+};
+
+interface QuestionsProps {
+  navigation: CompositeNavigationProp<
+    StackNavigationProp<OnBoardingRoutes, "Welcome">,
+    StackNavigationProp<AppStackRoutes, "Question">
+  >;
+}
+
+const Question = ({ navigation }: QuestionsProps) => {
+  const { x, scrollHandler } = useScrollHandler();
   const scroll = useRef<Animated.ScrollView>(null);
 
-  const shuffledDifficulty = _([]);
+  const [qloading, setqloading] = useState<boolean>(false);
+  const [allQuestions, setAllQuestion] = useState<QuizPropsState[]>([]);
+  const [userSelectedAnswers, setUserSelectedAnswers] = useState<
+    currAnswerObjectProps[]
+  >([]);
+  const [score, setScore] = useState<number>(0);
+  const [curNum, setCurNum] = useState<number>(0);
+  const [TOTAL_QUESTIONS] = useState<number>(10);
+  const [quizOver, setQuizOver] = useState<boolean>(false);
+  const [scrolling, setScrolling] = useState<boolean>(false);
 
-  const answerSelected = (answer: string, index: number) => {};
+  const shuffledDifficulty = _([
+    QuestionsDifficulty.EASY,
+    QuestionsDifficulty.MEDIUM,
+    QuestionsDifficulty.HARD,
+  ]);
 
-  const startJob = async () => {};
+  const answerSelected = (answer: string, index: number) => {
+    if (!quizOver) {
+      //Verificador de respuesta correcta
+      const answerIsCorrect = allQuestions[curNum].correct_answer === answer;
 
-  const nextQuestion = () => {};
+      //Incremento de puntaje si la respuesta es correcta
+      if (answerIsCorrect) setScore((currScore) => currScore + 1);
 
-  useEffect(() => {}, [curNum]);
+      //Guardado de respuesta actual correcrta seleccionada por el usuario
+      const currAnswerOject = {
+        question: allQuestions[curNum].question,
+        answer,
+        answerIsCorrect,
+        correctAnswer: allQuestions[curNum].correct_answer,
+      };
 
-  useEffect(() => {}, [userSelectedAnswers]);
+      setUserSelectedAnswers((curranswers) => [
+        ...curranswers,
+        currAnswerOject,
+      ]);
+    }
+  };
 
-  useEffect(() => {}, []);
+  const startJob = async () => {
+    setqloading(true);
+    setQuizOver(false);
+    const newQuestions = await grabQuizQuestions(
+      TOTAL_QUESTIONS,
+      shuffledDifficulty[0]
+    );
+    setAllQuestion(newQuestions);
+    setScore(0);
+    setUserSelectedAnswers([]);
+    setqloading(false);
+  };
 
-  // Animación final
+  const nextQuestion = () => {
+    //Pasar a la siguiente pregunta sin permitir regresar
+    if (!quizOver && curNum < allQuestions.length - 1) {
+      setCurNum((number) => +1);
+    } else {
+      setQuizOver(true);
+    }
+  };
+
+  useEffect(() => {
+    if (scroll.current) {
+      scroll.current.getNode().scrollResponderScrollTo({
+        x: width * curNum,
+        animated: true,
+      });
+    }
+  }, [curNum]);
+
+  useEffect(() => {
+    if (userSelectedAnswers.length > 0) {
+      nextQuestion();
+    }
+  }, [userSelectedAnswers]);
+
+  useEffect(() => {
+    startJob();
+  }, []);
+
+  //* Animacion final*//
   const finishedValue = useValue<number>(0);
-
-  useEffect(() => {}, [quizOver]);
+  useEffect(() => {
+    if (quizOver) {
+      finishedValue.setValue(1);
+    }
+  }, [quizOver]);
 
   const finished = withSpringTransition(finishedValue, {
     ...SpringUtils.makeDefaultConfig(),
@@ -70,49 +159,99 @@ const Question = ({ navigation }: QuesitonProps) => {
             }}
           >
             <Text color="white" variant="body">
-              Cargando Quiz, por favor espere...
+              cargando por favor espere...
             </Text>
           </View>
         ) : (
-          <Box flex={1}>
-            <Box justifyContent="flex-start" flex={1} flexDirection="column">
-              <Box
-                height={verticalScale(height * 0.3)}
-                backgroundColor="primary"
-              >
-                <ScrollView
-                  ref={scroll}
-                  horizontal
-                  snapToInterval={width}
-                  decelerationRate="fast"
-                  bounces={false}
-                ></ScrollView>
-              </Box>
-
-              <Box
-                style={{ flex: 1 }}
-                backgroundColor="white"
-                height={0.4 * height}
-                paddingTop="m"
-              >
+            <Box flex={1}>
+              <Box justifyContent="flex-start" flex={1} flexDirection="column">
+                <Box
+                  height={verticalScale(height * 0.3)}
+                  backgroundColor="primary"
+                >
+                  <ScrollView
+                    ref={scroll}
+                    horizontal
+                    snapToInterval={width}
+                    decelerationRate="fast"
+                    bounces={false}
+                    {...scrollHandler}
+                  >
+                    {allQuestions.map(({ question }, index) => (
+                      <Fragment key={index}>
+                        <QuestionSlide
+                          {...{ question, index }}
+                          questionNr={curNum + 1}
+                        />
+                      </Fragment>
+                    ))}
+                  </ScrollView>
+                </Box>
+                <Box
+                  style={{ flex: 1 }}
+                  backgroundColor="white"
+                  height={0.4 * height}
+                  paddingTop="m"
+                >
+                  <View
+                    style={{
+                      backgroundColor: theme.colors["white"],
+                      width: width * allQuestions.length,
+                      flexDirection: "row",
+                      transform: [{ translateX: multiply(x, -1) }],
+                    }}
+                  >
+                    {allQuestions.map(({ answers }, index) => (
+                      <Fragment>
+                        <Answers {...{ answers, answerSelected }} />
+                      </Fragment>
+                    ))}
+                  </View>
+                </Box>
                 <View
                   style={{
-                    backgroundColor: theme.colors["white"],
+                    width: width * allQuestions.length,
+                    backgroundColor: "white",
                     flexDirection: "row",
+                    transform: [{ translateX: multiply(x, -1) }],
                   }}
-                ></View>
+                >
+                  {allQuestions.map(({ answers }, index) => {
+                    const last = index === allQuestions.length - 1;
+                    return (
+                      <Fragment key={index}>
+                        <View
+                          style={{
+                            flex: 1,
+                            width,
+                            justifyContent: "center",
+                            padding: 20,
+                            alignItems: "center",
+                          }}
+                        >
+                          <Button
+                            variant="primary"
+                            label={last ? "Submit" : "next"}
+                            onPress={nextQuestion}
+                          />
+                        </View>
+                      </Fragment>
+                    );
+                  })}
+                </View>
               </Box>
-
-              <View
-                style={{
-                  backgroundColor: "white",
-                  flexDirection: "row",
-                }}
-              ></View>
             </Box>
-          </Box>
-        )}
+          )}
       </Box>
+      <Alert
+        {...{ FinishedAlert }}
+        onRestart={() => {
+          finishedValue.setValue(0);
+          startJob();
+          navigation.navigate("Welcome");
+        }}
+        userAnswers={userSelectedAnswers}
+      />
     </QuizContainer>
   );
 };

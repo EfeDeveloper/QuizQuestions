@@ -22,13 +22,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const Button = ({ variant, label, onPress, textTransform }: ButtonProps) => {
+const Button = ({ variant, label, onPress }: ButtonProps) => {
   const theme = useTheme<Theme>();
   const backgroundColor =
     variant === "primary" ? theme.colors.button : theme.colors.grey;
   const color = variant === "primary" ? theme.colors.white : theme.colors.green;
 
   return (
+
+    
     <RectButton
       {...{ onPress }}
       style={{ ...styles.container, backgroundColor }}

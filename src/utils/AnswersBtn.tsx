@@ -2,13 +2,12 @@ import React from "react";
 import { Dimensions, StyleSheet } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { useTheme } from "@shopify/restyle";
-import { Theme, Text, Box } from "../components/themes";
+import { Theme, Text } from "../components/themes";
 const { width } = Dimensions.get("window");
 
 interface AnswerButtonProps {
   variant?: "default" | "primary";
   answer?: string;
-  clicked?: number | boolean;
   correct?: boolean;
   onPress?: () => void;
 }
@@ -30,7 +29,6 @@ const AnswersBtn = ({
   variant,
   answer,
   onPress,
-  clicked,
 }: AnswerButtonProps) => {
   const theme = useTheme<Theme>();
   const backgroundColor =

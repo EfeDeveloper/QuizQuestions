@@ -1,6 +1,6 @@
 import React from "react";
-import { Dimensions, /* SafeAreaView, */ Image } from "react-native";
-// import Constants from "expo-constants";
+import { Dimensions, Image } from "react-native";
+import Constants from "expo-constants";
 
 // Utilidades de navegación
 import { CompositeNavigationProp } from "@react-navigation/native";
@@ -17,7 +17,7 @@ export const welcomeAssets = require("../../../assets/imag/question.png");
 
 // Utilidades
 import theme, { Box, Text } from "../themes";
-import Button from "../../utils/Button";
+import { Button } from "../../utils";
 import QuizContainer from "../Question/QuizContainer";
 
 interface WelcomeProps {
@@ -51,15 +51,14 @@ const Welcome = ({ navigation }: WelcomeProps) => {
           style={{
             backgroundColor: theme.colors["primary"],
             height: 500 + height,
-            width: width + 2,
+            width: width * 2,
             borderRadius: 1000,
             position: "absolute",
             alignSelf: "center",
             top: 0.52 * height,
           }}
-        >
-          {" "}
-        </Animated.View>
+        />
+
         <Animated.View
           style={{
             backgroundColor: theme.colors["primary"],
@@ -73,8 +72,9 @@ const Welcome = ({ navigation }: WelcomeProps) => {
           }}
         >
           <Text variant="title" marginBottom="m" textAlign="center">
-            Quiz Time
+            Quiz App
           </Text>
+
           <Text
             variant="body"
             color="white"
@@ -85,6 +85,7 @@ const Welcome = ({ navigation }: WelcomeProps) => {
             simple trivia de 10 preguntas, donde responderás si un enunciado es
             falso o verdadero.
           </Text>
+
           <Button
             variant="primary"
             label="Iniciar"

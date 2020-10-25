@@ -5,8 +5,7 @@ import { Box, Text } from "../themes";
 import GoodIcon from "../IconsSvg/Well";
 import Bad from "../IconsSvg/Wrong";
 import { moderateScale } from "react-native-size-matters";
-import Animated, { call, cond, eq, interpolate } from "react-native-reanimated";
-import { currAnswerObjectProps } from "./Question";
+import Animated, { interpolate } from "react-native-reanimated";
 import { useEffect } from "react";
 const { height, width } = Dimensions.get("window");
 
@@ -131,7 +130,6 @@ const FinishedAlert = ({
           <Button
             onPress={onRestart}
             variant="primary"
-            textTransform="uppercase"
             label="Ok"
           />
         </Box>

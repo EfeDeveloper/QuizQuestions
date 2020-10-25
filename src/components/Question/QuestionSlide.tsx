@@ -4,17 +4,20 @@ import { Box, Text } from "../themes";
 import { questions } from './data';
 const { width, height } = Dimensions.get("window");
 
-interface QuestionSlideProps {}
+interface QuestionSlideProps {
+  question: string;
+  questionNr: number;
+}
 
-export default function QuestionSlide({}: QuestionSlideProps) {
+export default function QuestionSlide({ question, questionNr }: QuestionSlideProps) {
   return (
     <Box {...{ width }} alignItems="center" padding="m">
       <Text variant="title" fontSize={24} marginTop="m">
-        Question Number {}
+        Pregunta Numero {questionNr}
       </Text>
 
       <Text variant="body" color="white" marginTop="xl" textAlign="center">
-        {questions}
+        {question}
       </Text>
     </Box>
   );
