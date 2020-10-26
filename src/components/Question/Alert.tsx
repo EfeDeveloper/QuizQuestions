@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dimensions, StyleSheet } from "react-native";
-import { Button } from "../../Utils";
-import { Box, Text } from "../themes";
-import GoodIcon from "../IconsSvg/Well";
-import Bad from "../IconsSvg/Wrong";
+import { Button } from "../../utils";
+import { Box, Text } from "../theme";
+import Well from "../IconsSvg/Well";
+import Wrong from "../IconsSvg/Wrong";
 import { moderateScale } from "react-native-size-matters";
 import Animated, { interpolate } from "react-native-reanimated";
-import { useEffect } from "react";
 const { height, width } = Dimensions.get("window");
+
 
 interface FinishedAlertProps {
   finished: Animated.Node<number>;
@@ -69,22 +69,21 @@ const FinishedAlert = ({
         <Box
           backgroundColor="white"
           height={moderateScale(120)}
-          width={moderateScale(120)}
+          width={moderateScale(360)}
           position="absolute"
           zIndex={1}
-          borderRadius="xl"
           justifyContent="center"
           alignItems="center"
           top={moderateScale(12)}
         >
-          {percent > 50 ? <GoodIcon /> : <Bad />}
+          {percent > 50 ? <Well /> : <Wrong />}
         </Box>
         <Box height={height * 0.15}></Box>
         <Box
           flex={1}
           alignItems="center"
-          style={{ paddingTop: 50 }}
-          padding="m"
+          style={{ paddingTop: 120 }}
+          padding="xl"
           backgroundColor="white"
         >
           <Text
@@ -94,7 +93,7 @@ const FinishedAlert = ({
             color="black"
             textAlign="center"
           >
-            {percent > 50 ? "Passed" : "Failed"}
+            {percent > 50 ? "Felicidades tu puntaje es de:" : "Lo lamento tupuntaje es de:"}
           </Text>
 
           <Text
@@ -103,7 +102,7 @@ const FinishedAlert = ({
             textAlign="center"
             marginBottom="m"
           >
-            {percent}% SCORE
+            {percent}%
           </Text>
 
           <Text
@@ -123,15 +122,10 @@ const FinishedAlert = ({
             marginBottom="m"
             fontSize={14}
           >
-            Has fallado {userAnswers.length} de 10 preguntas y solo has contestado bien{" "}
-            {correctCount} durante la prueba.
+            Has contestado {userAnswers.length} preguntas de las cuales{" "} {correctCount} son correctas.
           </Text>
 
-          <Button
-            onPress={onRestart}
-            variant="primary"
-            label="Ok"
-          />
+          <Button onPress={onRestart} variant="button" label="Volver" />
         </Box>
       </Box>
     </Animated.View>

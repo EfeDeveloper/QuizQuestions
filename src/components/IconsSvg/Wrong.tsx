@@ -1,7 +1,7 @@
 import * as React from "react";
 import { moderateScale } from "react-native-size-matters";
 import Svg, { Path, Circle } from "react-native-svg";
-import theme from "../themes";
+import theme from "../theme";
 
 export interface IconProps {
   onPress?: () => void;

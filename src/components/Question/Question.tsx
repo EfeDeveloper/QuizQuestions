@@ -1,43 +1,42 @@
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { Alert, Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import Animated, {
   multiply,
   SpringUtils,
-  Value
+  Value,
 } from "react-native-reanimated";
 import {
   useScrollHandler,
   useValue,
-  withSpringTransition
+  withSpringTransition,
 } from "react-native-redash";
 import { verticalScale } from "react-native-size-matters";
 import { AppStackRoutes } from "../../../App";
-import { Button } from "../../Utils";
+import { Button } from "../../utils";
 import {
-  grabQuizQuestions, QuestionsDifficulty,
-
-
-  QuizPropsState, _
+  QuestionsDifficulty,
+  grabQuizQuestions,
+  QuizPropsState,
+  _,
 } from "../Helper";
 import { OnBoardingRoutes } from "../Navigation";
 import QuizContainer from "../Question/QuizContainer";
-import theme, { Box, Text } from "../themes";
-import FinishedAlert from "./Alert";
+import theme, { Box, Text } from "../theme";
 import Answers from "./Ansers";
 import QuestionSlide from "./QuestionSlide";
+import Alert from "./Alert";
 const { View, ScrollView } = Animated;
 
 //Utilidades
 const { height, width } = Dimensions.get("window");
 
-
 export type currAnswerObjectProps = {
   question: string;
-  answer: string;
+  answer: boolean;
   answerIsCorrect: boolean;
-  correctAnswer: string;
+  correctAnswer: boolean;
 };
 
 interface QuestionsProps {
@@ -58,17 +57,17 @@ const Question = ({ navigation }: QuestionsProps) => {
   >([]);
   const [score, setScore] = useState<number>(0);
   const [curNum, setCurNum] = useState<number>(0);
-  const [TOTAL_QUESTIONS] = useState<number>(10);
+  const [TOTAL_QUESTIONS] = useState<number>(11);
   const [quizOver, setQuizOver] = useState<boolean>(false);
   const [scrolling, setScrolling] = useState<boolean>(false);
 
   const shuffledDifficulty = _([
-    QuestionsDifficulty.EASY,
-    QuestionsDifficulty.MEDIUM,
+   // QuestionsDifficulty.EASY,
+   // QuestionsDifficulty.MEDIUM,
     QuestionsDifficulty.HARD,
   ]);
 
-  const answerSelected = (answer: string, index: number) => {
+  const answerSelected = (answer: boolean, index: number) => {
     if (!quizOver) {
       //Verificador de respuesta correcta
       const answerIsCorrect = allQuestions[curNum].correct_answer === answer;
@@ -107,18 +106,20 @@ const Question = ({ navigation }: QuestionsProps) => {
   const nextQuestion = () => {
     //Pasar a la siguiente pregunta sin permitir regresar
     if (!quizOver && curNum < allQuestions.length - 1) {
-      setCurNum((number) => +1);
+      setCurNum((number) => number + 1);
     } else {
       setQuizOver(true);
     }
   };
 
   useEffect(() => {
-    if (scroll.current) {
-      scroll.current.getNode().scrollResponderScrollTo({
-        x: width * curNum,
-        animated: true,
-      });
+    if (!quizOver) {
+      if (scroll.current) {
+        scroll.current.getNode().scrollTo({
+          x: width * curNum,
+          animated: true,
+        });
+      }
     }
   }, [curNum]);
 
@@ -143,7 +144,7 @@ const Question = ({ navigation }: QuestionsProps) => {
   const finished = withSpringTransition(finishedValue, {
     ...SpringUtils.makeDefaultConfig(),
     overshootClamping: true,
-    damping: new Value(10),
+    damping: new Value(11),
   });
 
   return (
@@ -166,7 +167,7 @@ const Question = ({ navigation }: QuestionsProps) => {
             <Box flex={1}>
               <Box justifyContent="flex-start" flex={1} flexDirection="column">
                 <Box
-                  height={verticalScale(height * 0.3)}
+                  height={verticalScale(height * 0.4)}
                   backgroundColor="primary"
                 >
                   <ScrollView
@@ -202,7 +203,7 @@ const Question = ({ navigation }: QuestionsProps) => {
                     }}
                   >
                     {allQuestions.map(({ answers }, index) => (
-                      <Fragment>
+                      <Fragment key={index}>
                         <Answers {...{ answers, answerSelected }} />
                       </Fragment>
                     ))}
@@ -230,8 +231,8 @@ const Question = ({ navigation }: QuestionsProps) => {
                           }}
                         >
                           <Button
-                            variant="primary"
-                            label={last ? "Submit" : "next"}
+                            variant="button"
+                            label={last ? "Enviar" : "Siguiente"}
                             onPress={nextQuestion}
                           />
                         </View>
@@ -244,7 +245,7 @@ const Question = ({ navigation }: QuestionsProps) => {
           )}
       </Box>
       <Alert
-        {...{ FinishedAlert }}
+        {...{ finished }}
         onRestart={() => {
           finishedValue.setValue(0);
           startJob();

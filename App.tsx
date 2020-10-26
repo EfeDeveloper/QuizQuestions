@@ -29,7 +29,7 @@ const AppStack = createStackNavigator<AppStackRoutes>();
 export default function App() {
   return (
     <ThemeProvider {...{ theme }}>
-     //<LoadAssets {...{ assets, fonts }}>
+     <LoadAssets {...{ assets, fonts }}>
         <SafeAreaProvider>
           <AppStack.Navigator headerMode="none" initialRouteName="OnBoarding">
             <AppStack.Screen

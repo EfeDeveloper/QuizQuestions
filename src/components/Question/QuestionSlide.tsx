@@ -1,8 +1,7 @@
 import React from "react";
-import { View, Dimensions } from "react-native";
-import { Box, Text } from "../themes";
-import { questions } from './data';
-const { width, height } = Dimensions.get("window");
+import { Dimensions } from "react-native";
+import { Box, Text } from "../theme";
+const { width } = Dimensions.get("window");
 
 interface QuestionSlideProps {
   question: string;
@@ -11,12 +10,23 @@ interface QuestionSlideProps {
 
 export default function QuestionSlide({ question, questionNr }: QuestionSlideProps) {
   return (
-    <Box {...{ width }} alignItems="center" padding="m">
-      <Text variant="title" fontSize={24} marginTop="m">
+    <Box {...{ width }}
+      alignItems="center"
+      padding="m">
+      <Text
+        variant="title"
+        fontSize={40}
+        marginTop="m"
+      >
         Pregunta Numero {questionNr}
       </Text>
 
-      <Text variant="body" color="white" marginTop="xl" textAlign="center">
+      <Text
+        variant="body"
+        color="white"
+        marginTop="xl"
+        textAlign="center"
+      >
         {question}
       </Text>
     </Box>

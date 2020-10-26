@@ -1,6 +1,5 @@
 import React from "react";
 import { Dimensions, Image } from "react-native";
-import Constants from "expo-constants";
 
 // Utilidades de navegación
 import { CompositeNavigationProp } from "@react-navigation/native";
@@ -16,8 +15,8 @@ const { height, width } = Dimensions.get("window");
 export const welcomeAssets = require("../../../assets/imag/question.png");
 
 // Utilidades
-import theme, { Box, Text } from "../themes";
-import { Button } from "../../utils";
+import theme, { Box, Text } from "../theme";
+import  Button  from "../../utils/Button";
 import QuizContainer from "../Question/QuizContainer";
 
 interface WelcomeProps {
@@ -38,7 +37,7 @@ const Welcome = ({ navigation }: WelcomeProps) => {
             backgroundColor="white"
             alignItems="center"
             justifyContent="center"
-            padding="m"
+            padding="s"
           >
             <Image
               source={welcomeAssets}
@@ -47,17 +46,6 @@ const Welcome = ({ navigation }: WelcomeProps) => {
             />
           </Box>
         </Box>
-        <Animated.View
-          style={{
-            backgroundColor: theme.colors["primary"],
-            height: 500 + height,
-            width: width * 2,
-            borderRadius: 1000,
-            position: "absolute",
-            alignSelf: "center",
-            top: 0.52 * height,
-          }}
-        />
 
         <Animated.View
           style={{
@@ -71,29 +59,32 @@ const Welcome = ({ navigation }: WelcomeProps) => {
             alignItems: "center",
           }}
         >
-          <Text variant="title" marginBottom="m" textAlign="center">
+          <Text
+          variant="title"
+          marginBottom="m"
+          textAlign="center"
+          >
             Quiz App
           </Text>
-
           <Text
             variant="body"
             color="white"
             textAlign="center"
             marginBottom="m"
           >
-            Bienvenido(a) demuestra tus conocimientos en tecnología con esta
+            Bienvenido"a" demuestra tus conocimientos con esta
             simple trivia de 10 preguntas, donde responderás si un enunciado es
             falso o verdadero.
           </Text>
 
           <Button
-            variant="primary"
+            variant="button"
             label="Iniciar"
             onPress={() => navigation.navigate("Question")}
           />
         </Animated.View>
       </Box>
-      <StatusBar backgroundColor={theme.colors["primary"]} style="light" />
+      <StatusBar backgroundColor={theme.colors["button"]} style="light" />
     </QuizContainer>
   );
 };

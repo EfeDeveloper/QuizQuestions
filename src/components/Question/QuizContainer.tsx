@@ -1,11 +1,12 @@
-import React, { ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import theme from "../themes";
+import theme from "../theme";
 
 export interface QuizContainerProps {
-  children: ReactNode;
+
+ children: ReactNode;
 }
 
 export default function QuizContainer({children}: QuizContainerProps) {

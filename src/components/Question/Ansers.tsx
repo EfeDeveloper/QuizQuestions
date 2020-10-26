@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { AnswerBtn } from "../../Utils";
+import { View, StyleSheet } from "react-native";
+import { AnswersBtn } from "../../utils";
 
 interface AnswersProps {
-  answers: string[];
+  answers: boolean[];
   onPress?: () => void;
-  answerSelected: (answer: string, index: number) => void;
+  answerSelected: (answer: boolean, index: number) => void;
 }
 
 const styles = StyleSheet.create({
@@ -22,9 +22,8 @@ export default function Answers({ answers, answerSelected }: AnswersProps) {
     <View style={{ ...styles.container }}>
       {answers.map((_, index) => (
         <Fragment key={index}>
-          <AnswerBtn
+          <AnswersBtn
             answer={answers[index]}
-            variant="primary"
             onPress={() => {
               answerSelected(answers[index], index);
             }}
